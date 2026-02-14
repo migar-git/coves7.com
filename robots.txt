@@ -1,4 +1,23 @@
 User-agent: *
 Allow: /
 
+# Sitemap
 Sitemap: https://coves7.com/sitemap.xml
+
+# Common crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# Block sensitive areas (if any in the future)
+Disallow: /admin/
+Disallow: /private/
+Disallow: *.json$
+
+# Crawl delay (optional, be nice to servers)
+Crawl-delay: 1
