@@ -2,13 +2,14 @@
 
 ## Overview
 
-Coves7 is a static HTML affiliate review site. It has no backend, no user authentication, and no server-side processing. The security surface is limited but must be managed carefully given affiliate link integrity and user trust.
+Coves7 is a static affiliate review site. There is no user authentication, no database, and no server-side processing. The attack surface is minimal, but the following practices must be maintained.
 
 ## Content Security Policy (CSP)
 
-Apply CSP via `<meta http-equiv="Content-Security-Policy">` in the `<head>` of each HTML page.
+Apply CSP via `<meta http-equiv="Content-Security-Policy">` in all HTML pages.
 
-Recommended policy:
+Recommended policy for an affiliate site with external resources:
+
 ```html
 <meta http-equiv="Content-Security-Policy"
   content="default-src 'self';
@@ -17,62 +18,59 @@ Recommended policy:
            font-src 'self' https://fonts.gstatic.com;
            img-src 'self' data: https:;
            connect-src 'self' https://www.google-analytics.com;
-           object-src 'none';
-           frame-src 'none';">
+           frame-src 'none';
+           object-src 'none';">
 ```
 
-Adjust `script-src` and `connect-src` based on the analytics and affiliate network scripts actually loaded.
+Tighten `'unsafe-inline'` by migrating inline scripts to external files and using nonces where possible.
 
 ## HTTPS Enforcement
 
-HTTPS is enforced automatically by GitHub Pages. The "Enforce HTTPS" setting must be enabled in repository Settings → Pages.
+GitHub Pages automatically enforces HTTPS for custom domains. Verify in repository Settings → Pages → "Enforce HTTPS" is checked.
 
-- HTTP requests automatically redirect to HTTPS
-- TLS certificates are provisioned by Let's Encrypt via GitHub Pages
+Never serve this site over HTTP. The CNAME file must be present for the custom domain TLS certificate to be provisioned correctly.
 
 ## Secrets and API Keys
 
 The following must never be committed to this repository:
 
-- Analytics property IDs (use environment-specific includes or publicly safe client IDs only)
-- Affiliate network secret tokens or webhook credentials
-- Email service API keys
-- Any `.env` files
+- Analytics API keys or tracking IDs that provide write access
+- Affiliate network secret tokens or postback URLs
+- Email marketing platform API keys
+- Any `.env` file
 
-`.gitignore` must include:
+The `.gitignore` must include:
 ```
 .env
 .env.*
 *.key
-*.pem
 secrets/
 ```
 
-## Affiliate Link Integrity
+## Affiliate Link Security
 
-- All affiliate links must use `rel="noopener noreferrer sponsored"` per Google Webmaster Guidelines
-- Affiliate tracking parameters must not contain secret tokens
-- Cloaked affiliate links (via redirects) must be served from a secure, HTTPS endpoint
+- Use `rel="noopener noreferrer sponsored"` on all affiliate outbound links
+- Do not use `target="_blank"` without `rel="noopener noreferrer"` (prevents tab-napping)
+- Affiliate tracking parameters should only contain IDs, not secrets
 
-## Third-Party Scripts
+## Subresource Integrity (SRI)
 
-- Minimize third-party scripts loaded on each page
-- Use Subresource Integrity (SRI) for any CDN-loaded scripts:
-  ```html
-  <script src="https://cdn.example.com/lib.js"
-          integrity="sha384-..." crossorigin="anonymous"></script>
-  ```
-- Regularly audit loaded scripts for unexpected additions
+For any CDN-loaded scripts or stylesheets, use SRI hashes:
 
-## .gitignore Requirements
+```html
+<script src="https://cdn.example.com/lib.js"
+        integrity="sha384-..."
+        crossorigin="anonymous"></script>
+```
 
-The repository `.gitignore` must exclude:
-- `.env` and `.env.*`
-- `node_modules/`
-- `*.log`
-- OS files (`.DS_Store`, `Thumbs.db`)
-- Editor files (`.vscode/settings.json` if containing personal tokens)
+Generate hashes at: https://www.srihash.org/
 
-## Reporting Security Issues
+## Vulnerability Reporting
 
-Contact the repository owner privately via GitHub. Do not post security vulnerabilities in public issues or discussions.
+Report security issues privately to the repository owner via GitHub private email or repository security advisories. Do not post vulnerability details in public issues.
+
+## Legal Compliance
+
+- Affiliate disclosure must be visible on all pages with affiliate links (FTC requirement)
+- Privacy policy must accurately describe analytics and tracking in use
+- robots.txt must not inadvertently expose sensitive directory paths

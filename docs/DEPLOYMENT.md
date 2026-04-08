@@ -23,7 +23,7 @@ dig coves7.com A +short
 
 ```bash
 git add <changed-files>
-git commit -m "type: description"
+git commit -m "feat/fix/content: describe your change"
 git push origin main
 ```
 
@@ -31,43 +31,43 @@ GitHub Pages rebuilds automatically within ~60 seconds.
 
 ## Verifying Deployment
 
-1. Open https://coves7.com in a private/incognito browser window
-2. Hard-refresh (Ctrl+Shift+R) to bypass CDN cache
-3. Confirm changed content is visible
-4. Verify HTTPS padlock — certificate managed by GitHub Pages
+1. Open https://coves7.com in a private browser window
+2. Hard-refresh (Ctrl+Shift+R) to bypass cache
+3. Confirm changed content appears and affiliate links work
 
 ## Rollback
 
 ```bash
-# Revert the last commit
+# Revert last commit
 git revert HEAD
 git push origin main
 
-# Revert a specific commit
+# Revert specific commit
 git revert <commit-sha>
 git push origin main
 ```
 
-Always prefer `git revert` over force-push to preserve commit history.
+Prefer `git revert` over force-push to preserve history.
 
 ## Environment Variables
 
-No server-side environment variables required. This is a fully static site.
+None required. This is a fully static site.
 
-Affiliate tracking parameters are embedded in HTML link hrefs. Analytics scripts use client-side (public) tracking IDs only.
+- Affiliate tracking parameters are embedded in link URLs (not secret)
+- Analytics IDs (GA4 measurement IDs) are safe in client-side HTML
 
 ## Pre-Deploy Checklist
 
-- [ ] Pages render correctly in Chrome, Firefox, Safari at 375px and 1280px
-- [ ] All affiliate links resolve and include correct tracking parameters
-- [ ] No console errors in browser DevTools
+- [ ] All pages render correctly in Chrome, Firefox, Safari
+- [ ] Mobile layout correct at 375px
+- [ ] All affiliate links open correctly with tracking parameters
+- [ ] Affiliate disclosure visible on pages with affiliate links
 - [ ] sitemap.xml updated if pages added or removed
-- [ ] robots.txt reflects correct domain (coves7.com)
-- [ ] Lighthouse Performance ≥ 90, Accessibility ≥ 90
+- [ ] No console errors in browser DevTools
+- [ ] Lighthouse Performance ≥ 90
 
 ## Post-Deploy Checklist
 
-- [ ] coves7.com and www.coves7.com both resolve
-- [ ] HTTPS enforced (HTTP redirects to HTTPS)
+- [ ] coves7.com and www.coves7.com both resolve over HTTPS
+- [ ] Spot-check affiliate links are functional (not 404)
 - [ ] Analytics recording sessions (if configured)
-- [ ] Affiliate links tracked in affiliate network dashboard
