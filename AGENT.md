@@ -1,24 +1,35 @@
 ---
+# AGENT.md - Agency manifest for this repository (canonical resident agent).
+# Re-stamped to the portfolio-wide standard on 2026-06-16.
 schema_version: "1.0"
 ---
 
 # Agent Manifest: coves7.com
 
+## Identity
+
 ```yaml
 repo: coves7.com
-type: static-site
-description: "Static HTML affiliate/content site — AI tools, prompts, and resource pages"
+type: static
+description: "Static affiliate/content site for AI tools, prompts, resources."
 owner: migar-git
 ```
 
 ## Authority
 
+Controls what the resident agency agent may do autonomously in this repo.
+
 ```yaml
 authority:
+  # 0=read-only  1=lint/format on branch  2=bug+test fix via PR  3=cross-repo via PR
   max_auto_level: 1
-  always_open_pr: true
+  always_open_pr: true            # canonical: never auto-commit to default branch
   protected_paths:
+    - src/auth/
+    - migrations/
     - .env*
+    - secrets/
+    - credentials/
   notify_on: [2, 3]
   allowed_machines: []
 ```
@@ -31,7 +42,7 @@ commands:
   lint:   ""
   format: ""
   build:  ""
-  deploy: ""
+  deploy: ""                      # always human-gated
 ```
 
 ## LLM Routing
@@ -49,25 +60,26 @@ llm:
 ## Dependencies
 
 ```yaml
-dependencies: []
+dependencies: []                  # other agency repos to re-test if this changes
 ```
 
 ## CI / Analytics
 
 ```yaml
 ci:
-  push_results: false
-  min_pass_rate: 1.0
-  track:
-    - lint_errors
+  push_results: true
+  min_pass_rate: 0.95
+  enforce:
+    - pre-commit                  # .pre-commit-config.yaml (agency laws)
+    - agency-gate                 # .github/workflows/agency-gate.yml
+  track: [test_pass_rate, coverage_pct, lint_errors, build_time_sec]
 ```
 
 ## Notes
 
 ```yaml
 notes: |
-  - Static HTML site — no build system, no package manager
-  - Content pages: AI tools, prompts, affiliate resources
-  - No server-side code — pure HTML/CSS/JS
-  - Changes are safe to auto-commit (max_auto_level: 1)
+  - Resident agent obeys this manifest + the agency laws enforced by the
+    committed pre-commit hooks and the agency-gate CI workflow.
+  - Secrets live only in .env (never committed); see protected_paths.
 ```
