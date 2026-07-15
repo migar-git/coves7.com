@@ -121,7 +121,7 @@ gh api repos/migar-git/coves7.com/pages | jq '{status, cname, https_enforced}'
 - **GitHub Repo:** https://github.com/migar-git/coves7.com
 - **GitHub Pages URL:** https://coves7.com
 - **GoDaddy Domain:** coves7.com (DNS managed via API)
-- **Email Contact:** hello@coves7.com (configured via Office 365)
+- **Email Contact:** info@coves7.com (configured via Office 365)
 
 ## Notes
 
